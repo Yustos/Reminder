@@ -7,4 +7,6 @@ import ru.yt.reminderreader.domain.RecordDetail;
  */
 public interface OnRecordDetailReader {
     void onTaskCompleted(RecordDetail result);
+
+    void onFailure(String message);
 }

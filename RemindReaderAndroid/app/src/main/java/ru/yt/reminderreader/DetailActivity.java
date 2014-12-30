@@ -3,14 +3,13 @@ package ru.yt.reminderreader;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
-import java.util.Date;
 
 import ru.yt.reminderreader.domain.RecordDetail;
 import ru.yt.reminderreader.services.OnRecordDetailReader;
@@ -34,7 +33,7 @@ public class DetailActivity extends ActionBarActivity implements OnRecordDetailR
         Intent intent = getIntent();
         String id = intent.getStringExtra("RecordId");
 
-        RecordDetailService service = new RecordDetailService(this);
+        RecordDetailService service = new RecordDetailService(Helpers.GetServiceUrl(this), this);
         service.GetRecordDetail(id);
     }
 
@@ -67,6 +66,11 @@ public class DetailActivity extends ActionBarActivity implements OnRecordDetailR
         DateFormat dateFormat = DateFormat.getDateTimeInstance();
         _textBoxDate.setText(dateFormat.format(result.date));
         _textBoxBody.setText(result.body);
+    }
+
+    @Override
+    public void onFailure(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     public void ButtonEditClick(View v)

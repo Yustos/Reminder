@@ -5,4 +5,6 @@ package ru.yt.reminderreader.services;
  */
 public interface OnDataReceiver {
     void onDataReceived(String result);
+
+    void onFailure(String message);
 }

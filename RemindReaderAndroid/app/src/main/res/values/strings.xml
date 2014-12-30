@@ -14,5 +14,7 @@
     <string name="delete">Delete</string>
     <string name="date">Date:</string>
     <string name="edit">Edit</string>
-
+    <string name="ReminderServiceUrl">ReminderServiceUrl</string>
+    <string name="serviceUrlSummary">Service base URL</string>
+    <string name="serviceUrl">Service URL</string>
 </resources>

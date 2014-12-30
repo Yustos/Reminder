@@ -16,16 +16,17 @@ import ru.yt.reminderreader.domain.Record;
  * Created by Yustos on 25.12.2014.
  */
 public class RecordsService extends ServiceBase implements OnDataReceiver {
-    private final OnRecordsReaded _callback;
+    private final OnRecordsReadCallback _callback;
 
-    public RecordsService(OnRecordsReaded callback)
+    public RecordsService(String serviceUrl, OnRecordsReadCallback callback)
     {
+        super(serviceUrl);
         _callback = callback;
     }
 
     public void GetRecords() {
         ReadDataTask t = new ReadDataTask(this);
-        t.execute("http://10.0.2.2:9359/api/list");
+        t.execute("list");
     }
 
     @Override
@@ -36,6 +37,11 @@ public class RecordsService extends ServiceBase implements OnDataReceiver {
         } catch (Exception e) {
             Log.d("ReadPlacesFeedTask", e.getLocalizedMessage());
         }
+    }
+
+    @Override
+    public void onFailure(String message) {
+        _callback.onFailure(message);
     }
 
     private Record[] Deserialize(String json) {

@@ -7,10 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Date;
 
-import ru.yt.reminderreader.domain.Record;
 import ru.yt.reminderreader.domain.RecordDetail;
 import ru.yt.reminderreader.services.OnRecordDetailReader;
 import ru.yt.reminderreader.services.RecordDetailService;
@@ -32,7 +32,7 @@ public class EditActivity extends ActionBarActivity implements OnRecordDetailRea
         if (intent.hasExtra("RecordId")) {
             String id = intent.getStringExtra("RecordId");
             intent.putExtra("isLoading", true);
-            RecordDetailService service = new RecordDetailService(this);
+            RecordDetailService service = new RecordDetailService(Helpers.GetServiceUrl(this), this);
             service.GetRecordDetail(id);
         }
     }
@@ -68,7 +68,7 @@ public class EditActivity extends ActionBarActivity implements OnRecordDetailRea
             id = currentIntent.getStringExtra("RecordId");
         }
 
-        RecordDetailService service = new RecordDetailService(this);
+        RecordDetailService service = new RecordDetailService(Helpers.GetServiceUrl(this), this);
         RecordDetail record = new RecordDetail(
             id,
             new Date(),
@@ -79,7 +79,7 @@ public class EditActivity extends ActionBarActivity implements OnRecordDetailRea
 
     public void ButtonDeleteClick(View v)
     {
-        String id = null;
+        String id;
         Intent currentIntent = getIntent();
         if (currentIntent.hasExtra("RecordId"))
         {
@@ -90,7 +90,7 @@ public class EditActivity extends ActionBarActivity implements OnRecordDetailRea
             return;
         }
         currentIntent.putExtra("idDeleting", true);
-        RecordDetailService service = new RecordDetailService(this);
+        RecordDetailService service = new RecordDetailService(Helpers.GetServiceUrl(this), this);
         service.DeleteRecordDetail(id);
     }
 
@@ -115,5 +115,10 @@ public class EditActivity extends ActionBarActivity implements OnRecordDetailRea
             intent.putExtra("RecordId", result.id);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onFailure(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

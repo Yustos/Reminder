@@ -15,24 +15,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/load"
-            android:id="@+id/buttonLoad"
-            android:onClick="ButtonLoadClick" />
-
+            android:id="@+id/buttonLoad" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add"
-            android:id="@+id/buttonAdd"
-            android:onClick="ButtonAddClick" />
-
+            android:id="@+id/buttonAdd" />
     </LinearLayout>
-
-
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listViewRecords"
         android:scrollingCache="false" />
-
 </LinearLayout>

@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-import ru.yt.reminderreader.domain.Record;
 import ru.yt.reminderreader.domain.RecordDetail;
 
 /**
@@ -16,14 +15,15 @@ import ru.yt.reminderreader.domain.RecordDetail;
 public class RecordDetailService extends ServiceBase implements OnDataReceiver {
     private final OnRecordDetailReader _callback;
 
-    public RecordDetailService(OnRecordDetailReader callback)
+    public RecordDetailService(String serviceBaseUrl, OnRecordDetailReader callback)
     {
+        super(serviceBaseUrl);
         _callback = callback;
     }
 
     public void GetRecordDetail(String id) {
         ReadDataTask t = new ReadDataTask(this);
-        t.execute(String.format("http://10.0.2.2:9359/api/detail/%s", id));
+        t.execute(String.format("detail/%s", id));
     }
 
     public void SaveRecordDetail(RecordDetail record)
@@ -40,7 +40,7 @@ public class RecordDetailService extends ServiceBase implements OnDataReceiver {
             String data = json.toString();
 
             SaveDataTask t = new SaveDataTask(data, this);
-            t.execute("http://10.0.2.2:9359/api/detail/");
+            t.execute("detail/");
         }
         catch (Exception e)
         {
@@ -52,7 +52,7 @@ public class RecordDetailService extends ServiceBase implements OnDataReceiver {
     {
         try {
             DeleteDataTask t = new DeleteDataTask(this);
-            t.execute(String.format("http://10.0.2.2:9359/api/detail/%s", id));
+            t.execute(String.format("detail/%s", id));
         }
         catch (Exception e)
         {
@@ -63,24 +63,28 @@ public class RecordDetailService extends ServiceBase implements OnDataReceiver {
     @Override
     public void onDataReceived(String result) {
         try {
-            RecordDetail record = Deserialize(result);
+            RecordDetail record = Deserializer(result);
             _callback.onTaskCompleted(record);
         } catch (Exception e) {
             Log.d("ReadPlacesFeedTask", e.getLocalizedMessage());
         }
     }
 
-    private RecordDetail Deserialize(String json) {
+    @Override
+    public void onFailure(String message) {
+        _callback.onFailure(message);
+    }
+
+    private RecordDetail Deserializer(String json) {
         try {
             JSONObject record = new JSONObject(json);
             Double time = record.getDouble("date");
             Date date = new Date((long)(time * 1000));
-            RecordDetail r = new RecordDetail(
+            return new RecordDetail(
                 record.getString("id"),
                 date,
                 record.getString("title"),
                 record.getString("body"));
-            return r;
         }
         catch (JSONException e)
         {
