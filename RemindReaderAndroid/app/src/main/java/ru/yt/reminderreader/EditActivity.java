@@ -12,11 +12,11 @@ import android.widget.Toast;
 import java.util.Date;
 
 import ru.yt.reminderreader.domain.RecordDetail;
-import ru.yt.reminderreader.services.OnRecordDetailReader;
+import ru.yt.reminderreader.services.RecordDetailReader;
 import ru.yt.reminderreader.services.RecordDetailService;
 
 
-public class EditActivity extends ActionBarActivity implements OnRecordDetailReader {
+public class EditActivity extends ActionBarActivity implements RecordDetailReader {
     private EditText _editTextTitle;
     private EditText _editTextBody;
 
@@ -32,7 +32,7 @@ public class EditActivity extends ActionBarActivity implements OnRecordDetailRea
         if (intent.hasExtra("RecordId")) {
             String id = intent.getStringExtra("RecordId");
             intent.putExtra("isLoading", true);
-            RecordDetailService service = new RecordDetailService(Helpers.GetServiceUrl(this), this);
+            RecordDetailService service = new RecordDetailService(this);
             service.GetRecordDetail(id);
         }
     }
@@ -68,7 +68,7 @@ public class EditActivity extends ActionBarActivity implements OnRecordDetailRea
             id = currentIntent.getStringExtra("RecordId");
         }
 
-        RecordDetailService service = new RecordDetailService(Helpers.GetServiceUrl(this), this);
+        RecordDetailService service = new RecordDetailService(this);
         RecordDetail record = new RecordDetail(
             id,
             new Date(),
@@ -90,8 +90,13 @@ public class EditActivity extends ActionBarActivity implements OnRecordDetailRea
             return;
         }
         currentIntent.putExtra("idDeleting", true);
-        RecordDetailService service = new RecordDetailService(Helpers.GetServiceUrl(this), this);
+        RecordDetailService service = new RecordDetailService(this);
         service.DeleteRecordDetail(id);
+    }
+
+    @Override
+    public String getServiceUrl() {
+        return Helpers.GetServiceUrl(this);
     }
 
     @Override

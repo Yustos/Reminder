@@ -12,11 +12,12 @@ import android.widget.Toast;
 import java.text.DateFormat;
 
 import ru.yt.reminderreader.domain.RecordDetail;
-import ru.yt.reminderreader.services.OnRecordDetailReader;
+import ru.yt.reminderreader.services.RecordDetailReader;
 import ru.yt.reminderreader.services.RecordDetailService;
+import ru.yt.reminderreader.services.storage.RecordsStore;
 
 
-public class DetailActivity extends ActionBarActivity implements OnRecordDetailReader {
+public class DetailActivity extends ActionBarActivity implements RecordDetailReader {
     private TextView _textBoxTitle;
     private TextView _textBoxDate;
     private TextView _textBoxBody;
@@ -33,7 +34,7 @@ public class DetailActivity extends ActionBarActivity implements OnRecordDetailR
         Intent intent = getIntent();
         String id = intent.getStringExtra("RecordId");
 
-        RecordDetailService service = new RecordDetailService(Helpers.GetServiceUrl(this), this);
+        RecordDetailService service = new RecordDetailService(this);
         service.GetRecordDetail(id);
     }
 
@@ -61,11 +62,20 @@ public class DetailActivity extends ActionBarActivity implements OnRecordDetailR
     }
 
     @Override
+    public String getServiceUrl() {
+        return Helpers.GetServiceUrl(this);
+    }
+
+    @Override
     public void onTaskCompleted(RecordDetail result) {
         _textBoxTitle.setText(result.title);
         DateFormat dateFormat = DateFormat.getDateTimeInstance();
         _textBoxDate.setText(dateFormat.format(result.date));
         _textBoxBody.setText(result.body);
+
+
+        RecordsStore store = RecordsStore.get(this);
+        store.addRecord(result);
     }
 
     @Override

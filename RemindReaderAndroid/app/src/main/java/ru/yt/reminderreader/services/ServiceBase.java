@@ -32,10 +32,10 @@ public class ServiceBase {
     }
 
     protected abstract class CallServiceTaskBase extends AsyncTask<String, Void, String> {
-        private final OnDataReceiver _receiver;
+        private final DataReceiver _receiver;
         private String Failure = null;
 
-        public CallServiceTaskBase(OnDataReceiver receiver)
+        public CallServiceTaskBase(DataReceiver receiver)
         {
             _receiver = receiver;
         }
@@ -110,7 +110,7 @@ public class ServiceBase {
     }
 
     protected class ReadDataTask extends CallServiceTaskBase {
-        public ReadDataTask(OnDataReceiver receiver)
+        public ReadDataTask(DataReceiver receiver)
         {
             super(receiver);
         }
@@ -124,7 +124,7 @@ public class ServiceBase {
 
     protected class SaveDataTask extends CallServiceTaskBase {
         private final String _data;
-        public SaveDataTask(String data, OnDataReceiver receiver)
+        public SaveDataTask(String data, DataReceiver receiver)
         {
             super(receiver);
             _data = data;
@@ -151,7 +151,7 @@ public class ServiceBase {
     }
 
     protected class DeleteDataTask extends CallServiceTaskBase {
-        public DeleteDataTask(OnDataReceiver receiver)
+        public DeleteDataTask(DataReceiver receiver)
         {
             super(receiver);
         }

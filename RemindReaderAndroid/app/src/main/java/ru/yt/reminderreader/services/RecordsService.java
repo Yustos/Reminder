@@ -15,12 +15,12 @@ import ru.yt.reminderreader.domain.Record;
 /**
  * Created by Yustos on 25.12.2014.
  */
-public class RecordsService extends ServiceBase implements OnDataReceiver {
-    private final OnRecordsReadCallback _callback;
+public class RecordsService extends ServiceBase implements DataReceiver {
+    private final RecordsReader _callback;
 
-    public RecordsService(String serviceUrl, OnRecordsReadCallback callback)
+    public RecordsService(RecordsReader callback)
     {
-        super(serviceUrl);
+        super(callback.getServiceUrl());
         _callback = callback;
     }
 
@@ -31,12 +31,8 @@ public class RecordsService extends ServiceBase implements OnDataReceiver {
 
     @Override
     public void onDataReceived(String result) {
-        try {
-            Record[] records = Deserialize(result);
-            _callback.onTaskCompleted(records);
-        } catch (Exception e) {
-            Log.d("ReadPlacesFeedTask", e.getLocalizedMessage());
-        }
+        Record[] records = Deserialize(result);
+        _callback.onTaskCompleted(records);
     }
 
     @Override

@@ -18,34 +18,37 @@ import java.util.List;
 
 import ru.yt.reminderreader.adapters.RecordListAdapter;
 import ru.yt.reminderreader.domain.Record;
-import ru.yt.reminderreader.services.OnRecordsReadCallback;
+import ru.yt.reminderreader.services.RecordsReader;
 import ru.yt.reminderreader.services.RecordsService;
+import ru.yt.reminderreader.services.storage.RecordsStore;
 
 
-public class MainActivity extends ActionBarActivity implements OnRecordsReadCallback {
+public class MainActivity extends ActionBarActivity implements RecordsReader {
     public List<Record> RecordsList = new ArrayList<>();
 
     private RecordListAdapter _adapter;
 
-    private ListView _listViewRecords;
-
-    private ProgressDialog _progDailog;
+    private ProgressDialog _progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        _progDailog = new ProgressDialog(this);
+        // init progress dialog
+        _progressDialog = new ProgressDialog(this);
+        _progressDialog.setMessage("Loading...");
+        _progressDialog.setIndeterminate(false);
+        _progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        _progressDialog.setCancelable(true);
 
-        _adapter = new RecordListAdapter(
-                this,
-                RecordsList);
+        // init list view adapter
+        _adapter = new RecordListAdapter(this, RecordsList);
 
-        _listViewRecords = (ListView) findViewById(R.id.listViewRecords);
-        _listViewRecords.setAdapter(_adapter);
+        ListView listViewRecords = (ListView) findViewById(R.id.listViewRecords);
+        listViewRecords.setAdapter(_adapter);
 
-        _listViewRecords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewRecords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Record record = _adapter.getItem(position);
@@ -56,21 +59,17 @@ public class MainActivity extends ActionBarActivity implements OnRecordsReadCall
             }
         });
 
+        // init buttons
         findViewById(R.id.buttonLoad).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _progDailog.setMessage("Loading...");
-                _progDailog.setIndeterminate(false);
-                _progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                _progDailog.setCancelable(true);
-                _progDailog.show();
-                RecordsService service = new RecordsService(Helpers.GetServiceUrl(MainActivity.this), MainActivity.this);
+                _progressDialog.show();
+                RecordsService service = new RecordsService(MainActivity.this);
                 service.GetRecords();
             }
         });
 
         findViewById(R.id.buttonAdd).setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditActivity.class);
@@ -99,18 +98,21 @@ public class MainActivity extends ActionBarActivity implements OnRecordsReadCall
     }
 
     @Override
-    public void onTaskCompleted(Record[] result) {
-        _progDailog.dismiss();
-        Log.d("Complete", "it");
-        RecordsList.clear();
+    public String getServiceUrl() {
+        return Helpers.GetServiceUrl(this);
+    }
 
+    @Override
+    public void onTaskCompleted(Record[] result) {
+        _progressDialog.dismiss();
+        RecordsList.clear();
         RecordsList.addAll(Arrays.asList(result));
         _adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onFailure(String message) {
-        _progDailog.dismiss();
+        _progressDialog.dismiss();
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

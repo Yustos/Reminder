@@ -12,12 +12,12 @@ import ru.yt.reminderreader.domain.RecordDetail;
 /**
  * Created by Yustos on 26.12.2014.
  */
-public class RecordDetailService extends ServiceBase implements OnDataReceiver {
-    private final OnRecordDetailReader _callback;
+public class RecordDetailService extends ServiceBase implements DataReceiver {
+    private final RecordDetailReader _callback;
 
-    public RecordDetailService(String serviceBaseUrl, OnRecordDetailReader callback)
+    public RecordDetailService(RecordDetailReader callback)
     {
-        super(serviceBaseUrl);
+        super(callback.getServiceUrl());
         _callback = callback;
     }
 
