@@ -73,9 +73,9 @@ public class DetailActivity extends ActionBarActivity implements RecordDetailRea
         _textBoxDate.setText(dateFormat.format(result.date));
         _textBoxBody.setText(result.body);
 
-
         RecordsStore store = RecordsStore.get(this);
-        store.addRecord(result);
+        store.addOrUpdateRecord(result);
+        Toast.makeText(this, "Cached", Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,10 +41,14 @@ public class MainActivity extends ActionBarActivity implements RecordsReader {
         _progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         _progressDialog.setCancelable(true);
 
+        //load records from cache
+        RecordsStore store = RecordsStore.get(this);
+        RecordsList.addAll(store.getRecords());
+
         // init list view adapter
         _adapter = new RecordListAdapter(this, RecordsList);
 
-        ListView listViewRecords = (ListView) findViewById(R.id.listViewRecords);
+        ListView listViewRecords = (ListView)findViewById(R.id.listViewRecords);
         listViewRecords.setAdapter(_adapter);
 
         listViewRecords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -89,8 +92,7 @@ public class MainActivity extends ActionBarActivity implements RecordsReader {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, PrefActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, PrefActivity.class));
             return true;
         }
 
