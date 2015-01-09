@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:key="@string/ReminderServiceUrl"
-        android:summary="@string/serviceUrlSummary"
-        android:title="@string/serviceUrl">
-    </EditTextPreference>
+    <PreferenceCategory android:title="Server settings">
+        <EditTextPreference
+            android:key="@string/ReminderServiceUrl"
+            android:summary="@string/serviceUrlSummary"
+            android:title="@string/serviceUrl" />
+        <ru.yt.reminderreader.LongEditTextPreference
+            android:key="@string/SyncDate"
+            android:summary="Last sync date"
+            android:inputType="number"
+            android:title="Sync date" />
+    </PreferenceCategory>
 </PreferenceScreen>
+

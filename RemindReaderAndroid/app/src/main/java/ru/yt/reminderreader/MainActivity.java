@@ -18,7 +18,8 @@ import java.util.List;
 import ru.yt.reminderreader.adapters.RecordListAdapter;
 import ru.yt.reminderreader.domain.Record;
 import ru.yt.reminderreader.services.RecordsReader;
-import ru.yt.reminderreader.services.RecordsService;
+import ru.yt.reminderreader.services.SyncReader;
+import ru.yt.reminderreader.services.SyncService;
 import ru.yt.reminderreader.services.storage.RecordsStore;
 
 
@@ -43,7 +44,7 @@ public class MainActivity extends ActionBarActivity implements RecordsReader {
 
         //load records from cache
         RecordsStore store = RecordsStore.get(this);
-        RecordsList.addAll(store.getRecords());
+        RecordsList.addAll(store.getRecords(false));
 
         // init list view adapter
         _adapter = new RecordListAdapter(this, RecordsList);
@@ -58,17 +59,16 @@ public class MainActivity extends ActionBarActivity implements RecordsReader {
 
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                 intent.putExtra("RecordId", record.id);
-                startActivity(intent);
+                startActivityForResult(intent, 0);
             }
         });
 
         // init buttons
-        findViewById(R.id.buttonLoad).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.buttonSync).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _progressDialog.show();
-                RecordsService service = new RecordsService(MainActivity.this);
-                service.GetRecords();
+                Intent intent = new Intent(getApplicationContext(), SyncActivity.class);
+                startActivityForResult(intent, 0);
             }
         });
 
@@ -76,7 +76,17 @@ public class MainActivity extends ActionBarActivity implements RecordsReader {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 0);
+            }
+        });
+
+        findViewById(R.id.buttonPurge).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecordsStore store = RecordsStore.get(MainActivity.this);
+                store.purgeDatabase();
+                RecordsList.clear();
+                _adapter.notifyDataSetChanged();
             }
         });
     }
@@ -97,6 +107,27 @@ public class MainActivity extends ActionBarActivity implements RecordsReader {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK)
+        {
+            RecordsStore store = RecordsStore.get(this);
+            if (data != null && data.hasExtra("RecordId"))
+            {
+                String id = data.getStringExtra("RecordId");
+                Record record = (Record)store.getRecordDetail(id);
+                RecordsList.add(0, record);
+            }
+            else
+            {
+                List<Record> records = store.getRecords(false);
+                RecordsList.clear();
+                RecordsList.addAll(records);
+            }
+            _adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

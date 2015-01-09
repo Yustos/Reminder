@@ -7,11 +7,13 @@ import java.util.Date;
  */
 public class Record {
     public String id;
+    public StateType state;
     public Date date;
     public String title;
 
-    public Record(String id, Date date, String title) {
+    public Record(String id, StateType state, Date date, String title) {
         this.id = id;
+        this.state = state;
         this.date = date;
         this.title = title;
     }

@@ -1,54 +1,64 @@
 from tornado.ioloop import IOLoop
-from tornado.web import RequestHandler, Application, url
+from tornado.web import RequestHandler, Application, url, UIModule
 from tornado import log
 import logging
 import Storage
 import os
-import json
-import time
+from api.ListServiceHandler import ListServiceHandler
+from api.DetailServiceHandler import DetailServiceHandler
+from api.SyncServiceHandler import SyncServiceHandler
+from api.LogServiceHandler import LogServiceHandler
+from optparse import OptionParser
+from Logger import Logger
+import uimodules
 
-class ListServiceHandler(RequestHandler):
-    def __init__(self, application, request, **kwargs):
-        self._storage = Storage.Storage()
-        return super(ListServiceHandler, self).__init__(application, request, **kwargs)
+logInstance = None
 
-    def get(self):
-        self.write(self._getItems())
 
-    def delete(self):
-        self._storage.delete(self.get_query_argument("name"))
-        self.write(self._getItems())
+class MainHandler(RequestHandler):
+    def get(self, path):
+        modName = "main.html"
+        if path == "log":
+            modName = "log.html"
+        self.render(os.path.join("templates", "template.html"), title="Main", modName=modName)
 
-    def _getItems(self):
-        items = self._storage.get()
-        return {"items": [{'id': i.id, 'date' : i.date,'title':i.title} for i in items]}
 
-class DetailServiceHandler(RequestHandler):
-    def __init__(self, application, request, **kwargs):
-        self._storage = Storage.Storage()
-        return super(DetailServiceHandler, self).__init__(application, request, **kwargs)
+class LoggerHandler(logging.Handler):
+    def emit(self, record):
+        logInstance.add("", self.format(record), record.logSource if hasattr(record, "logSource") else None)
 
-    def get(self, id):
-        item = self._storage.getDetail(id)
-        self.write({'id': item.id, 'date' : item.date,'title':item.title, 'body': item.body})
+    @staticmethod
+    def LogRequest(handler):
+            logInstance.add(handler.request.remote_ip, handler.request.uri)
 
-    def post(self,id):
-        input = json.loads(self.request.body)
-        if 'id' in input:
-            newItem = self._storage.update(input["id"], input["title"], input["body"])
-        else:
-            newItem = self._storage.add(input["title"], input["body"])
-        self.write({'id': newItem.id, 'date': newItem.date, 'title': newItem.title, 'body': newItem.body})
-
-    def delete(self, id):
-        self._storage.delete(id)
+settings = {
+    "static_path": os.path.join(os.path.dirname(__file__), "static"),
+    "ui_modules": uimodules,
+    "log_function": LoggerHandler.LogRequest
+}
 
 application = Application([
-    url(r"/api/list", ListServiceHandler, name="listService"),
-    url(r"/api/detail/(.*)", DetailServiceHandler, name="detailService"),
-])
+    url(r"/main/(.*)", MainHandler, name="log"),
+    url(r"/api/list(.*)", ListServiceHandler, name="listService"),
+    url(r"/api/detail(.*)", DetailServiceHandler, name="detailService"),
+    url(r"/api/sync(.*)", SyncServiceHandler, name="syncService"),
+    url(r"/api/log(.*)", LogServiceHandler, name="logService"),
+], **settings)
 
 if __name__ == "__main__":
+    opt = OptionParser()
+    opt.add_option("-d", "--data", dest="data", help="Folder to store data")
+    opts, args = opt.parse_args()
+
+    Storage.Storage.path = opts.data
+    Logger.path = opts.data
+    logInstance = Logger()
     application.listen(9359)
+
+    logInstance.add("local", "Start")
+    log.app_log.addHandler(LoggerHandler())
+
+    log.enable_pretty_logging()
+
     IOLoop.instance().start()
 

@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import ru.yt.reminderreader.domain.Record;
+import ru.yt.reminderreader.domain.StateType;
 
 /**
  * Created by Yustos on 25.12.2014.
@@ -41,28 +42,9 @@ public class RecordsService extends ServiceBase implements DataReceiver {
     }
 
     private Record[] Deserialize(String json) {
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray records = jsonObject.getJSONArray("items");
-            final Integer count = records.length();
-            Record[] result = new Record[count];
-            for (Integer i = 0; i < count; i++) {
-                JSONObject record = records.getJSONObject(i);
-                Double time = record.getDouble("date");
-                Date date = new Date((long)(time * 1000));
-                Record r = new Record(record.getString("id"),
-                    date,
-                    record.getString("title"));
-                result[i] = r;
-            }
-            Arrays.sort(result, RecordsComparator);
-            return result;
-        }
-        catch (JSONException e)
-        {
-            Log.d("Deserialize", e.getLocalizedMessage());
-            return null;
-        }
+        Record[] result = Mappers.DeserializeRecords(json);
+        Arrays.sort(result, RecordsComparator);
+        return result;
     }
 
     public static Comparator<Record> RecordsComparator = new Comparator<Record>() {

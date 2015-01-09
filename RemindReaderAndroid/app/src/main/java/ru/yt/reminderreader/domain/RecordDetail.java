@@ -9,8 +9,8 @@ public class RecordDetail extends Record {
     public String body;
 
 
-    public RecordDetail(String id, Date date, String title, String body) {
-        super(id, date, title);
+    public RecordDetail(String id, StateType state, Date date, String title, String body) {
+        super(id, state, date, title);
         this.body = body;
     }
 }

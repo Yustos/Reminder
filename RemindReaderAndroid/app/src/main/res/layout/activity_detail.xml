@@ -12,8 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/edit"
-        android:id="@+id/buttonEdit"
-        android:onClick="ButtonEditClick" />
+        android:id="@+id/buttonEdit" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,6 +24,18 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/textBoxTitle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/state"
+        android:id="@+id/textViewState" />
+
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textBoxState" />
 
     <TextView
         android:layout_width="wrap_content"

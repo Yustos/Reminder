@@ -31,23 +31,23 @@ public class RecordListAdapter extends ArrayAdapter<Record> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.record_item, parent, false);
-
-        //View v = convertView;
-        //if (v == null) {
-        //    LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //    v = vi.inflate(android.R.layout.simple_list_item_activated_1, null);
-        //}
         Record o = items.get(position);
         if (o != null) {
-            TextView tt = (TextView) v.findViewById(R.id.label);
-            if (tt != null) {
-                tt.setText(o.title);
+            TextView ttTitle = (TextView) v.findViewById(R.id.labelTitle);
+            if (ttTitle != null) {
+                ttTitle.setText(o.title);
             }
 
             TextView ttDate = (TextView) v.findViewById(R.id.labelDate);
             if (ttDate != null) {
                 DateFormat dateFormat = DateFormat.getDateTimeInstance();
                 ttDate.setText(dateFormat.format(o.date));
+            }
+
+            TextView ttState = (TextView)v.findViewById(R.id.labelState);
+            if (ttState != null)
+            {
+                ttState.setText(String.format("%s", o.state));
             }
         }
         return v;

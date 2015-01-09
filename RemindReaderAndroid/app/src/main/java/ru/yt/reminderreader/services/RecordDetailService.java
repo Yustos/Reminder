@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.util.Date;
 
 import ru.yt.reminderreader.domain.RecordDetail;
+import ru.yt.reminderreader.domain.StateType;
 
 /**
  * Created by Yustos on 26.12.2014.
@@ -23,7 +24,7 @@ public class RecordDetailService extends ServiceBase implements DataReceiver {
 
     public void GetRecordDetail(String id) {
         ReadDataTask t = new ReadDataTask(this);
-        t.execute(String.format("detail/%s", id));
+        t.execute(String.format("detail?id=%s", id));
     }
 
     public void SaveRecordDetail(RecordDetail record)
@@ -63,7 +64,7 @@ public class RecordDetailService extends ServiceBase implements DataReceiver {
     @Override
     public void onDataReceived(String result) {
         try {
-            RecordDetail record = Deserializer(result);
+            RecordDetail record = Mappers.DeserializeDetail(result);
             _callback.onTaskCompleted(record);
         } catch (Exception e) {
             Log.d("ReadPlacesFeedTask", e.getLocalizedMessage());
@@ -75,21 +76,5 @@ public class RecordDetailService extends ServiceBase implements DataReceiver {
         _callback.onFailure(message);
     }
 
-    private RecordDetail Deserializer(String json) {
-        try {
-            JSONObject record = new JSONObject(json);
-            Double time = record.getDouble("date");
-            Date date = new Date((long)(time * 1000));
-            return new RecordDetail(
-                record.getString("id"),
-                date,
-                record.getString("title"),
-                record.getString("body"));
-        }
-        catch (JSONException e)
-        {
-            Log.d("Deserialize", e.getLocalizedMessage());
-            return null;
-        }
-    }
+
 }
