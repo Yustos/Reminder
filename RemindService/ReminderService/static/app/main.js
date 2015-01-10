@@ -15,13 +15,14 @@
 
     app.controller("mainController", ["$scope", "$route", "$routeParams", "$location", "listService", "detailService",
         function ($scope, $route, $routeParams, $location, listService, detailService) {
-        //TODO: $route excess
+        //TODO: $route excess. ngView missing.
         var vm = this;
         vm.items = [];
         vm.selectedId = null;
         vm.showDeleted = null;
 
-        $scope.$on('$routeChangeSuccess', function() {
+        $scope.$on('$routeChangeSuccess', function(e, route, prev) {
+            //TODO: double call (invalid routes)
             vm.selectedId = $routeParams.id;
             vm.showDeleted = Boolean($routeParams.deleted);
             refresh();
@@ -48,7 +49,7 @@
             });
         };
 
-        $scope.$on("refresh", refresh);
+        //$scope.$on("refresh", refresh);
 
         vm.Edit = function (item) {
             var p = $location.search();
@@ -94,7 +95,7 @@
 
         vm.Save = function () {
             detailService.save(vm.item, function (data) {
-                $scope.$emit("refresh");
+                //$scope.$emit("refresh");
                 $location.path("/" + data.id);
                 toastr["info"](data.id, "Saved");
             });

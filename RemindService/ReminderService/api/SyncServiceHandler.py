@@ -1,4 +1,5 @@
 from tornado.web import RequestHandler
+from Logger import LogApi
 import Storage
 import json
 import time
@@ -8,11 +9,13 @@ class SyncServiceHandler(RequestHandler):
         self._storage = Storage.Storage()
         return super(SyncServiceHandler, self).__init__(application, request, **kwargs)
 
+    @LogApi()
     def get(self, path):
         date = self.get_argument("date", default=None, strip=False)
         result = self._storage.getFromDate(float(date))
         self.write({"items": [r.dict() for r in result]})
 
+    @LogApi()
     def post(self, path):
         input = json.loads(self.request.body)
         remoteRecord = Storage.Record(input["id"], time.time(), input["title"], input["body"], input["state"])

@@ -1,5 +1,6 @@
 from tornado.web import RequestHandler
-from Logger import Logger
+from Logger import Logger, LogApi
+
 
 class LogServiceHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
