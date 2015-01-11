@@ -1,8 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools" tools:context="ru.yt.reminderreader.LogActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_log" android:title="Log"
-        android:orderInCategory="101" />
+    <item android:id="@+id/action_load_more"
+        android:title="Load more"
+        android:icon="@drawable/ic_launcher"
+        app:showAsAction="ifRoom"
+        />
 </menu>

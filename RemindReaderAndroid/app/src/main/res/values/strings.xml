@@ -22,5 +22,9 @@
     <string name="title_activity_sync">SyncActivity</string>
     <string name="start">Start</string>
     <string name="SyncDate">SyncDate</string>
-
+    <string name="title_activity_log">LogActivity</string>
+    <string-array name="source_list">
+        <item>All</item>
+        <item>API</item>
+    </string-array>
 </resources>

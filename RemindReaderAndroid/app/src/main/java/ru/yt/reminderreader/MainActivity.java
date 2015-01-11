@@ -105,7 +105,10 @@ public class MainActivity extends ActionBarActivity implements RecordsReader {
             startActivity(new Intent(this, PrefActivity.class));
             return true;
         }
-
+        if (id == R.id.action_log) {
+            startActivity(new Intent(this, LogActivity.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

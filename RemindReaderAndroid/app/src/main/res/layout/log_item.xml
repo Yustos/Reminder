@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/labelDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@+id/labelDate">
+        </TextView>
+        <TextView
+            android:id="@+id/labelSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="@+id/labelSource" >
+        </TextView>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/labelClient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:text="@+id/labelClient">
+    </TextView>
+    <TextView
+        android:id="@+id/labelMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@+id/labelMessage">
+    </TextView>
+</LinearLayout>

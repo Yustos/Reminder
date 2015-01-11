@@ -35,6 +35,10 @@
             android:name=".SyncActivity"
             android:label="@string/title_activity_sync" >
         </activity>
+        <activity
+            android:name=".LogActivity"
+            android:label="@string/title_activity_log" >
+        </activity>
     </application>
 
 </manifest>
